@@ -28,9 +28,6 @@ class MainPage(Handler):
     def get(self):
         self.render("main-page.html")
 
-#class AddPost(Handler):
-
-
 class NewPost(Handler):
     def get(self, title="", body="", error=""):
         self.render("new-post.html", title=title, body=body, error=error)
@@ -42,7 +39,7 @@ class NewPost(Handler):
         if body and title:
             b = Blog(title = title, body = body)
             b.put()
-
+            b.key().id()
             self.redirect('/blog')
         else:
             error = "we need both a title and your blog!"
@@ -56,8 +53,18 @@ class BlogPage(Handler):
 
         self.render("blog.html", title=title, body=body, blogs=blogs)
 
+class ViewPostHandler(Handler):
+    def get(self, id):
+        valid_post = Blog.get_by_id(int(id))
+
+        if not valid_post:
+            self.response.write("Sorry, cannot find that post.")
+        else:
+            self.render("single-post.html", blog = valid_post)
+
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/blog', BlogPage),
-    ('/newpost', NewPost)
+    ('/newpost', NewPost),
+    webapp2.Route('/blog/<id:\d+>', ViewPostHandler)
 ], debug=True)
