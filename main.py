@@ -58,9 +58,11 @@ class ViewPostHandler(Handler):
         valid_post = Blog.get_by_id(int(id))
 
         if not valid_post:
-            self.response.write("Sorry, cannot find that post.")
+            error_title = "nothing here!"
+            error_body = "there is no post with id " + id
+            self.render("single-post.html", title = error_title, body = error_body)
         else:
-            self.render("single-post.html", blog = valid_post)
+            self.render("single-post.html", title = valid_post.title, body = valid_post.body)
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
