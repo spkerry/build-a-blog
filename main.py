@@ -40,7 +40,7 @@ class NewPost(Handler):
             b = Blog(title = title, body = body)
             b.put()
             b.key().id()
-            self.redirect('/blog')
+            self.render("single-post.html", title=title, body=body)
         else:
             error = "we need both a title and your blog!"
             self.render("new-post.html", title=title, body=body, error=error)
